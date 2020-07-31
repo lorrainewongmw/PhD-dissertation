@@ -13,6 +13,7 @@ set more off
 * Globals in most .do files *
 ********************************************************************************
 global control "sexst age age2 i.highestcompleduaggi i.mainlang hhsize i.free "
+global control_cob "sexst age age2 i.highestcompleduaggi i.mainlang hhsize i.free_nat "
 global controlfe "sexst age age2 i.highestcompleduaggi i.mainlang hhsize i.free i.arrival_cohort i.Canton i.nationalityid i.year"
 global controlfe_as "sexst age age2 i.highestcompleduaggi i.mainlang hhsize i.free i.Canton i.nationalityid i.year" // no arrival cohort fe
 
@@ -478,9 +479,10 @@ log close
 ******************************************************************************** 
 * COB fe: cross section and pooled (Appendix Table 18)
 ******************************************************************************** 
+
 forvalues i=2010(1)2014 {
 	foreach y of varlist emp lrevenu {
-		qui reg `y' asypop $control i.arrival_cohort i.Canton i.birthplace if year==`i', vce(cluster cid_canton) 
+		qui reg `y' asypop $control_cob i.arrival_cohort i.Canton i.birthplace if year==`i', vce(cluster cid_canton) 
 		qui sum `y' if e(sample)
 		outreg2 using secondpaper/OUT/append/ta18_cobxpool_`y'.xls, dec(3) ctitle(`i') append $spec ///
 		keep(asypop) nonotes
@@ -488,7 +490,7 @@ forvalues i=2010(1)2014 {
 }
 
 foreach y of varlist emp lrevenu {
-	qui reg `y' asypop $control i.arrival_cohort i.Canton i.birthplace i.year, vce(cluster id_cob_can) 
+	qui reg `y' asypop $control_cob i.arrival_cohort i.Canton i.birthplace i.year, vce(cluster id_cob_can) 
 	qui sum `y' if e(sample)
 	outreg2 using secondpaper/OUT/append/ta18_cobxpool_`y'.xls, dec(3) ctitle(pool) append $spec ///
 	keep(asypop) nonotes
@@ -499,12 +501,12 @@ foreach y of varlist emp lrevenu {
 * COB fe: All and recent (Appendix Table 19)
 ******************************************************************************** 
 foreach y of varlist emp lrevenu {
-	qui reg `y' i.asypop##c.chduration $control i.Canton i.birthplace i.year, vce(cluster id_cob_can) 
+	qui reg `y' i.asypop##c.chduration $control_cob i.Canton i.birthplace i.year, vce(cluster id_cob_can) 
 	qui sum `y' if e(sample)
 	outreg2 using secondpaper/OUT/append/ta19_cobrecent.xls, dec(3) ctitle(All`x') append $spec ///
 	keep(1.asypop chduration 1.asypop#c.chduration) addtext(Individual characteristics, Yes, Fixed effects YCB, Yes, Fixed effects A, No) nonotes
 		
-	qui reg `y' i.asypop##c.chduration $control i.Canton i.birthplace i.year if recent==1, vce(cluster id_cob_can) 
+	qui reg `y' i.asypop##c.chduration $control_cob i.Canton i.birthplace i.year if recent==1, vce(cluster id_cob_can) 
 	qui sum `y' if e(sample)
 	outreg2 using secondpaper/OUT/append/ta19_cobrecent.xls, dec(3) ctitle(Recent`x') append $spec ///
 	keep(1.asypop chduration 1.asypop#c.chduration) addtext(Individual characteristics, Yes, Fixed effects YCB, Yes, Fixed effects A, No) nonotes
@@ -516,7 +518,7 @@ foreach y of varlist emp lrevenu {
 ******************************************************************************** 
 foreach y of varlist emp lrevenu {
 	forvalues i=1(1)7 {
-		qui reg `y' asypop sexst age age2 i.mainlang hhsize i.highestcompleduaggi i.free i.Canton i.birthplace chduration i.year if duration_cat2==`i', vce(cluster id_cob_can) 
+		qui reg `y' asypop sexst age age2 i.mainlang hhsize i.highestcompleduaggi i.free_nat i.Canton i.birthplace chduration i.year if duration_cat2==`i', vce(cluster id_cob_can) 
 		qui sum `y' if e(sample)
 		outreg2 using secondpaper/OUT/append/ta20_cobassim_`y'.xls, dec(3) ctitle(`i') append $spec ///
 		keep(asypop) nonotes
