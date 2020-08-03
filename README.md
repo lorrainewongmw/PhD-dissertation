@@ -39,7 +39,7 @@ I examine the impact of waiting time to permit decisions on labour-market outcom
 
 
 ## Dataset desciption
-I use one common dataset for all three analysis. The main data source is the Swiss Longitudinal Demographic Database. It is a linked dataset with administrative records and survey responses. The data is restricted to the research team with NCCR - On the move. The following is a list of variables I used, with the variable names in square brackets:
+I use one common dataset for all three analysis. The main data source is the Swiss Longitudinal Demographic Database. It is a linked dataset with administrative records and survey responses. The data is restricted to the research team with NCCR - On the move. The following is a list of variables I used:
 
 Dependent variables:
 - `emp`: employment 
